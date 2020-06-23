@@ -1,6 +1,6 @@
 FROM google/cloud-sdk:alpine
 
-ARG VERSION=
+ARG VERSION=3.1.2
 
 ENV BASE_URL="https://storage.googleapis.com/kubernetes-helm"
 ENV TAR_FILE="helm-v${VERSION}-linux-amd64.tar.gz"
