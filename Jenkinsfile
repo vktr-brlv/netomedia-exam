@@ -17,6 +17,13 @@ podTemplate(
             alwaysPullImage: true,
             command: 'cat',
             ttyEnabled: true
+        ),
+        containerTemplate(
+            name: 'helm',
+            image: "${DEFAULTS.gcpGcr}/helm-slave",
+            alwaysPullImage: true,
+            command: 'cat',
+            ttyEnabled: true
         )
      ],
     volumes: [hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')]
@@ -52,6 +59,17 @@ podTemplate(
                 docker.withRegistry('https://gcr.io', "gcr:${DEFAULTS.gcpProjectId}") {
                     Img.push("${DEFAULTS.imageRelease}.${env.BUILD_NUMBER}-${gitHash}")
                     Img.push("${DEFAULTS.imageTag}")
+                }
+            }
+        }
+        container('helm'){
+            stage('deploy'){
+                echo 'Deploy app to gke'
+                dir('helm'){
+                    withCredentials([file(credentialsId: "creds-k8s", variable: 'KUBECONFIG'),\
+                                     file(credentialsId: "creds-gcp-sa-jenkins", variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                        sh 'helm upgrade -i app ./app'
+                     }
                 }
             }
         }
