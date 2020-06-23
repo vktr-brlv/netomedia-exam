@@ -1,8 +1,7 @@
 FROM google/cloud-sdk:alpine
 
 ARG VERSION=3.1.2
-
-ENV BASE_URL="https://storage.googleapis.com/kubernetes-helm"
+ENV BASE_URL="https://get.helm.sh"
 ENV TAR_FILE="helm-v${VERSION}-linux-amd64.tar.gz"
 
 RUN apk add --update --no-cache git bash curl ca-certificates && \
