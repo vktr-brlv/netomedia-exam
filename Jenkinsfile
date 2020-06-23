@@ -2,7 +2,7 @@ DEFAULTS              = [:] as HashMap
 DEFAULTS.gcpProjectId = "${env.GCP_DEFAULT_PROJECT_ID}"
 DEFAULTS.gcpGcr       = "gcr.io/${env.GCP_DEFAULT_PROJECT_ID}"
 DEFAULTS.gcpCredsId   = "${env.GCP_DEFAULT_PROJECT_ID}"
-DEFAULTS.imageName    = "jenkins-slave"
+DEFAULTS.imageName    = "app"
 DEFAULTS.imageTag     = 'latest'
 DEFAULTS.imageRelease = '0.1'
 
@@ -35,13 +35,11 @@ podTemplate(
 
             stage('build'){
                 echo 'In build stage'
-                dir('app') {
-                    wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
-                        Img = docker.build(
-                            "${DEFAULTS.gcpProjectId}/${DEFAULTS.imageName}:${DEFAULTS.imageTag}",
-                            "-f Dockerfile ./"
-                        )
-                    }
+                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
+                    Img = docker.build(
+                        "${DEFAULTS.gcpProjectId}/${DEFAULTS.imageName}:${DEFAULTS.imageTag}",
+                        "-f Dockerfile ./"
+                    )
                 }
             }
 
